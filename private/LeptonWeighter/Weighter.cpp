@@ -11,32 +11,36 @@ double Weighter::get_total_flux(Event& e) const{
     return flux;
 }
 
-double Weighter::weight(Event& e) const{
+double Weighter::weight(Event& e, double scale) const{
     double generation_weight = 0;
     for(auto g : gv)
-        generation_weight += (*g)(e);
+        generation_weight += (*g)(e, scale);
     double flux=0;
     for(auto f : fv)
         flux += (*f)(e);
 #ifdef DEBUGWEIGHTER
-    std::cout << flux << " " << (*cs)(e) << " " << generation_weight << std::endl;
+    std::cout << flux << " " << (*cs)(e, scale) << " " << generation_weight << std::endl;
 #endif
     if(generation_weight == 0)
         throw std::runtime_error("Out of declared generation phase space. Impossible event.");
-    return flux*(*cs)(e)/generation_weight;
+    return flux*(*cs)(e, scale)/generation_weight;
 }
 
 double Weighter::get_oneweight(Event& e) const{
     double generation_weight = 0;
     for(auto g : gv)
-        generation_weight += (*g)(e);
+        generation_weight += (*g)(e, 1.0);
     if(generation_weight == 0)
         throw std::runtime_error("Out of declared generation phase space. Impossible event.");
-    return (*cs)(e)/generation_weight;
+    return (*cs)(e, 1.0)/generation_weight;
 }
 
 #if defined(NUS_FOUND)
 double Weighter::get_effective_tau_oneweight(Event & e) const{
+
+    //#NOTE - THIS IS HARD CODED, SCALING NOT IMPLEMENTED FOR TAU SPECIFIC
+    double scale = 1.0;
+
     // needs to be a muon-neutrino simulation
     //std::cout << "Begin eff. weight calculation" << std::endl;
     if(not(e.primary_type == ParticleType::NuMu or e.primary_type == ParticleType::NuMuBar)){
@@ -51,7 +55,7 @@ double Weighter::get_effective_tau_oneweight(Event & e) const{
     // first compute the generation bias assuming its a muon-neutrino
     double generation_weight = 0;
     for(auto g : gv){
-        generation_weight += (*g)(e);
+        generation_weight += (*g)(e, 1.0);
     }
     if(generation_weight == 0){
         throw std::runtime_error("Out of declared generation phase space. Impossible event.");
@@ -76,7 +80,7 @@ double Weighter::get_effective_tau_oneweight(Event & e) const{
                       if(y_tau==0.0)
                         return 0.0;
                       double dxs = cs->DoubleDifferentialCrossSection(e_tau.primary_type, e_tau.final_state_particle_0, e_tau.final_state_particle_1,
-                                                                      e_tau.energy, e_tau.interaction_x, y_tau);
+                                                                      e_tau.energy, e_tau.interaction_x, y_tau, scale);
                       double dndz = tds.TauDecayToLepton(Etau,Emu)*tds.GetTauToLeptonBranchingRatio();
                       if(dxs*dndz <0) return 0.0;
                       return dxs*dndz;

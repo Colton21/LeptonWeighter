@@ -148,15 +148,15 @@ class Generator: public MetaWeighter<Generator> {
         virtual double probability_area() const = 0;
         virtual double probability_pos(double x, double y, double z,double zenith, double azimuth) const = 0;
         virtual double probability_interaction(double e, double y, double number_of_targets) const;
-        virtual double probability_interaction(double e, double x, double y, double number_of_targets) const;
+        virtual double probability_interaction(double e, double x, double y, double number_of_targets, double scale) const;
         virtual double get_eff_height(double x, double y, double z, double zenith, double azimuth) const = 0;
         virtual double number_of_targets(Event& e) const = 0;
     public:
         ///\brief Constructor
         explicit Generator(SimulationDetails sim_details):sim_details(sim_details){}
         ///\brief Return the probability of generating the event
-        double probability(Event & e) const;
-        double operator()(Event & e) const { return probability(e);}
+        double probability(Event & e, double scale) const;
+        double operator()(Event & e, double scale) const { return probability(e, scale);}
 };
 
 ///\class

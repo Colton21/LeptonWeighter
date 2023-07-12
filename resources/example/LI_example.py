@@ -58,7 +58,7 @@ def get_weight( props ):
     LWevent.y = 0
     LWevent.z = 0
     
-    weight = weight_event(LWevent)
+    weight = weight_event(LWevent, 1.0)
 
     # this would alert us that something bad is happening 
     if weight==np.nan:

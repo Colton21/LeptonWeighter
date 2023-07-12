@@ -12,7 +12,7 @@ bool CrossSectionFromSpline::is_charged_lepton(ParticleType p) const {
     return false;
 }
 
-double CrossSectionFromSpline::DoubleDifferentialCrossSection(ParticleType particle, ParticleType f0, ParticleType f1, double nuEnergy,double x, double y) const {
+double CrossSectionFromSpline::DoubleDifferentialCrossSection(ParticleType particle, ParticleType f0, ParticleType f1, double nuEnergy,double x, double y, double scale) const {
     int centerbuffer[3];
     double xx[3];
 
@@ -48,7 +48,7 @@ double CrossSectionFromSpline::DoubleDifferentialCrossSection(ParticleType parti
         throw std::runtime_error("CrossSection:CalDDXSPhotoSpline : Bad PDG type.");
     }
 
-    return msq_tocmsq*diffxs;
+    return msq_tocmsq*diffxs*scale;
 }
 
 CrossSectionFromSpline::CrossSectionFromSpline(
@@ -72,7 +72,8 @@ CrossSectionFromSpline::CrossSectionFromSpline(
         throw std::runtime_error("Error loading differential NC antineutrino spline.");
 }
 
-double GlashowResonanceCrossSection::DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, double energy, double x, double y) const {
+double GlashowResonanceCrossSection::DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, 
+                                                                     double energy, double x, double y, double scale) const {
   if(pt == ParticleType::NuEBar){
     // GR support comes from nusquids. CAD
     using namespace nusquids;

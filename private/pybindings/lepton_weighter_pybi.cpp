@@ -150,6 +150,10 @@ BOOST_PYTHON_MODULE(LeptonWeighter)
         ;
     class_<CrossSectionFromSpline, std::shared_ptr<CrossSectionFromSpline>, boost::noncopyable>("CrossSectionFromSpline", 
             init<std::string,std::string,std::string,std::string>(args("CC diff neutrino cross section path", "CC diff antineutrino cross section path","NC diff neutrino cross section path","NC diff antineutrino cross section path")))
+        ///pybindings from Colton
+        //.def_property("nu_CC_dsdxdy", &CrossSectionFromSpline::getNuCCdsdxdy, &CrossSectionFromSpline::setNuCCdsdxdy)
+        .add_property("nu_CC_dsdxdy", &CrossSectionFromSpline::getNuCCdsdxdy, &CrossSectionFromSpline::setNuCCdsdxdy)
+        //.add_property()
         ;
     class_<GlashowResonanceCrossSection, std::shared_ptr<GlashowResonanceCrossSection>, boost::noncopyable>("GlashowResonanceCrossSection");
     

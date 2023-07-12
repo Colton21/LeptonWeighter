@@ -84,9 +84,9 @@ class Weighter: public MetaWeighter<Weighter>{
         }
         double get_total_flux(Event & e) const;
         // most important function of all
-        double weight(Event & e) const;
+        double weight(Event & e, double scale) const;
         // most important function of all so you can call it in two ways
-        double operator()(Event & e) const {return weight(e);}
+        double operator()(Event & e, double scale) const {return weight(e, scale);}
         // compatibility mode
         double get_oneweight(Event & e) const;
 #if defined(NUS_FOUND)

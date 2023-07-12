@@ -11,6 +11,7 @@
 #include <iterator>
 #include <set>
 #include <LeptonWeighter/Weighter.h>
+#include "H5Cpp.h"
 
 //==============================================================================================
 //==============================================================================================
@@ -106,7 +107,7 @@ int main(int argc, char ** argv) {
     for(auto& e: events){
         std::cout << (int)e.final_state_particle_0 << "\t" << (int)e.final_state_particle_1 << "\t" << (int)e.primary_type << "\t";
         std::cout << e.energy << "\t" << cos(e.zenith) << "\t" << e.azimuth << "\t";
-        std::cout << w(e) << std::endl;
+        std::cout << w(e, 1.0) << std::endl;
     }
 
     return 0;

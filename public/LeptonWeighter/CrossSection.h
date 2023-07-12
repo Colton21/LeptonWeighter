@@ -23,11 +23,11 @@ namespace LW {
 ///\brief Abstract cross section class
 class CrossSection: public MetaWeighter<CrossSection> {
     public:
-        virtual double DoubleDifferentialCrossSection(ParticleType pt, ParticleType f0, ParticleType f1, double energy, double x, double y) const = 0;
+        virtual double DoubleDifferentialCrossSection(ParticleType pt, ParticleType f0, ParticleType f1, double energy, double x, double y, double scale) const = 0;
 
         template<typename Event>
-        double operator()(const Event& e) const {
-            return DoubleDifferentialCrossSection(e.primary_type, e.final_state_particle_0, e.final_state_particle_1, e.energy, e.interaction_x, e.interaction_y);
+        double operator()(const Event& e, double scale) const {
+            return DoubleDifferentialCrossSection(e.primary_type, e.final_state_particle_0, e.final_state_particle_1, e.energy, e.interaction_x, e.interaction_y, scale);
         }
 };
 
@@ -49,7 +49,11 @@ class CrossSectionFromSpline: public CrossSection {
         CrossSectionFromSpline(std::string differential_neutrino_CC_xs_spline_path, std::string differential_antineutrino_CC_xs_spline_path,
                 std::string differential_neutrino_NC_xs_spline_path, std::string differential_antineutrino_NC_xs_spline_path);
         ///\brief Returns double differential cross section in cm^2.
-        double DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, double energy, double x, double y) const override;
+        double DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, double energy, double x, double y, double scale) const override;
+        //using splinetable=photospline::splinetable<>;
+        void setNuCCdsdxdy(std::shared_ptr<splinetable> _nu_CC_dsdxdy) { nu_CC_dsdxdy = _nu_CC_dsdxdy; };
+        std::shared_ptr<splinetable> getNuCCdsdxdy() { return nu_CC_dsdxdy; };
+
 };
 
 ///\class
@@ -61,7 +65,7 @@ class GlashowResonanceCrossSection: public CrossSection {
         ///\brief Constructor
         GlashowResonanceCrossSection(){}
         ///\brief Returns single differential cross section in cm^2. The x-argument is ignored;
-        double DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, double energy, double x, double y) const override;
+        double DoubleDifferentialCrossSection(ParticleType pt, ParticleType finalstate_0, ParticleType finalstate_1, double energy, double x, double y, double scale) const override;
 };
 
 } // namespace LW

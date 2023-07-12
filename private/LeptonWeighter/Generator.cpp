@@ -10,7 +10,7 @@
 
 namespace LW {
 
-double Generator::probability(Event& e) const {
+double Generator::probability(Event& e, double scale) const {
     double p;
     p = probability_e(e.energy);
 #ifdef DEBUGPROBABILITY
@@ -42,7 +42,7 @@ double Generator::probability(Event& e) const {
     std::cout << "pint " << probability_interaction(e.energy,e.interaction_x,e.interaction_y) << std::endl;
 #endif
     return p*probability_stat()*probability_final_state(e.final_state_particle_0,e.final_state_particle_1)*
-        probability_interaction(e.energy,e.interaction_y,number_of_targets(e))*probability_interaction(e.energy,e.interaction_x,e.interaction_y,number_of_targets(e));
+        probability_interaction(e.energy,e.interaction_y,number_of_targets(e))*probability_interaction(e.energy,e.interaction_x,e.interaction_y,number_of_targets(e), scale);
 }
 
 double Generator::probability_final_state(ParticleType final_state_particle_0_,ParticleType final_state_particle_1_) const{
@@ -103,7 +103,7 @@ double Generator::probability_interaction(double enu, double y,double number_of_
   */
 }
 
-double Generator::probability_interaction(double enu, double x,double y,double number_of_targets) const {
+double Generator::probability_interaction(double enu, double x,double y,double number_of_targets, double scale) const {
     // DIS cross sections assumes all flavors to be equal in cross sections
     int centerbuffer[3];
     double xx[3];
@@ -114,11 +114,11 @@ double Generator::probability_interaction(double enu, double x,double y,double n
 
     double differential_xs, total_xs;
     if(sim_details.Get_DifferentialSpline()->searchcenters(xx,centerbuffer))
-        differential_xs = pow(10.0,sim_details.Get_DifferentialSpline()->ndsplineeval(xx,centerbuffer,0));
+        differential_xs = pow(10.0,sim_details.Get_DifferentialSpline()->ndsplineeval(xx,centerbuffer,0))*scale;
     else
         throw std::runtime_error("Could not evaluate total neutrino cross section spline.");
     if(sim_details.Get_TotalSpline()->searchcenters(xx,centerbuffer))
-        total_xs = pow(10.0,sim_details.Get_TotalSpline()->ndsplineeval(xx,centerbuffer,0));
+        total_xs = pow(10.0,sim_details.Get_TotalSpline()->ndsplineeval(xx,centerbuffer,0))*scale;
     else
         throw std::runtime_error("Could not evaluate total neutrino cross section spline.");
 

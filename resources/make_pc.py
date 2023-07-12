@@ -53,7 +53,8 @@ if library is None:
 file_dir = "./"
 found = False
 try: 
-    env_var = os.environ['PKG_CONFIG_LIBDIR']
+    #env_var = os.environ['PKG_CONFIG_LIBDIR']
+    env_var = os.environ['PKG_CONFIG_PATH']
     found = True
 except KeyError:
     print("Couldn't find 'PKG_CONFIG_LIBDIR', let's try 'PKG_CONFIG_PATH'")
@@ -62,10 +63,14 @@ except KeyError:
         found=True
     except KeyError:
         warnings.warn("WARNING: Couldn't identify any pkgconfig repository. Writing .pc right here './'")
+file_object = None
 if found:
+    print(library)
     for path in env_var.split(":"):
         if os.path.isdir( path ):
             try:
+                #print(path+"/{}.pc".format(library))
+                print(f"{path}/{library}.pc")
                 file_object = open(path+"/{}.pc".format(library), 'wt')
                 print("Writing pc file to {}/{}.pc".format(path,library))
                 break
@@ -76,7 +81,8 @@ else:
 
 
 # get the path to the environmental variables
-
+if file_object == None:
+    raise FileNotFoundError()
 
 file_object.write("prefix={}\r\n".format(pathto))
 file_object.write("\r\n")
