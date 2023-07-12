@@ -394,7 +394,7 @@ do
 	TMP=`echo "$var" | sed -n 's/^--with-nuflux=\(.*\)$/\1/p'`
 	if [ "$TMP" ]; then
 		NUFLUX_INCDIR="${TMP}/include";
-		NUFLUX_LIBDIR="${TMP}/lib";
+		NUFLUX_LIBDIR="${TMP}/lib64";
 	continue; fi
 
 	TMP=`echo "$var" | sed -n 's/^--with-nuflux-libdir=\(.*\)$/\1/p'`
